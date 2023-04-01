@@ -1,13 +1,12 @@
 package jpabasic;
 
-import jpabasic.domain.Member;
-import jpabasic.domain.Team;
+import jpabasic.domain.Order;
+import jpabasic.domain.OrderItem;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import java.util.List;
 
 public class JpaMain {
 
@@ -21,27 +20,8 @@ public class JpaMain {
 
         try {
 
-            Team team = new Team();
-            team.setName("teamA");
-            em.persist(team);
-
-            Member member = new Member();
-            member.setName("memberA");
-            member.changeTeam(team);
-            em.persist(member);
-
-            //영속성 컨텍스트 초기화
-//            em.flush();
-//            em.clear();
-
-            Team findTeam = em.find(Team.class, team.getId());
-            List<Member> members = findTeam.getMembers();
-
-            System.out.println("================");
-            for (Member m : members) {
-                System.out.println("m.getName() = " + m.getName());
-            }
-            System.out.println("================");
+            Order order = new Order();
+            order.addOrderItem(new OrderItem());
 
             tx.commit();
         } catch (Exception e) {
