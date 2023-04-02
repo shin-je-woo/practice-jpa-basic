@@ -1,12 +1,11 @@
 package jpabasic;
 
-import jpabasic.domain.Member;
+import jpabasic.domain.Book;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import java.time.LocalDateTime;
 
 public class JpaMain {
 
@@ -20,12 +19,11 @@ public class JpaMain {
 
         try {
 
-            Member member = new Member();
-            member.setName("user1");
-            member.setCreatedBy("shin");
-            member.setCreatedDate(LocalDateTime.now());
+            Book book = new Book();
+            book.setName("JPA");
+            book.setAuthor("신제우");
 
-            em.persist(member);
+            em.persist(book);
 
             tx.commit();
         } catch (Exception e) {
