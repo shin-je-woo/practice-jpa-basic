@@ -1,6 +1,7 @@
 package jpabasic;
 
-import jpabasic.domain.Book;
+import jpabasic.domain.Member;
+import org.hibernate.Hibernate;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -19,15 +20,28 @@ public class JpaMain {
 
         try {
 
-            Book book = new Book();
-            book.setName("JPA");
-            book.setAuthor("신제우");
+            Member member1 = new Member();
+            member1.setName("member1");
+            em.persist(member1);
 
-            em.persist(book);
+            em.flush();
+            em.clear();
 
+            Member refMember = em.getReference(Member.class, member1.getId());
+            System.out.println("refMember = " + refMember.getClass()); //Proxy
+            System.out.println("isLoded = " + emf.getPersistenceUnitUtil().isLoaded(refMember));
+
+            Hibernate.initialize(refMember);
+            System.out.println("isLoded = " + emf.getPersistenceUnitUtil().isLoaded(refMember));
+
+//            em.detach(refMember);
+//
+//            refMember.getName();
+//            System.out.println("isLoded = " + emf.getPersistenceUnitUtil().isLoaded(refMember));
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
+            e.printStackTrace();
         } finally {
             em.close();
         }
