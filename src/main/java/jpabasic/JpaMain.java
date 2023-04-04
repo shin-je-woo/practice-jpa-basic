@@ -1,7 +1,7 @@
 package jpabasic;
 
-import jpabasic.domain.Member;
-import jpabasic.domain.Team;
+import jpabasic.domain.Child;
+import jpabasic.domain.Parent;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -20,23 +20,20 @@ public class JpaMain {
 
         try {
 
-            Team team = new Team();
-            team.setName("teamA");
-            em.persist(team);
+            Child child1 = new Child();
+            Child child2 = new Child();
 
-            Member member1 = new Member();
-            member1.setName("member1");
-            member1.setTeam(team);
-            em.persist(member1);
+            Parent parent = new Parent();
+            parent.addChild(child1);
+            parent.addChild(child2);
+
+            em.persist(parent);
 
             em.flush();
             em.clear();
 
-            Member m = em.find(Member.class, member1.getId());
-
-            System.out.println("team = " + m.getTeam().getClass()); // m.getTeam()은 프록시 객체
-
-            m.getTeam().getName(); // team을 사용할 때 프록시 객체를 초기화 요청 -> 이 때 DB에서 select(지연로딩LAZY의 동작 원리)
+            Parent findParent = em.find(Parent.class, parent.getId());
+            findParent.getChildList().remove(0);
 
             tx.commit();
         } catch (Exception e) {
