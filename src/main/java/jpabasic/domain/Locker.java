@@ -1,9 +1,6 @@
 package jpabasic.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 @Entity
 public class Locker extends BaseEntity {
@@ -14,6 +11,6 @@ public class Locker extends BaseEntity {
 
     private String name;
 
-    @OneToOne(mappedBy = "locker")
+    @OneToOne(mappedBy = "locker", fetch = FetchType.LAZY)
     private Member member;
 }
