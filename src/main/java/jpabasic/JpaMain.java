@@ -1,5 +1,6 @@
 package jpabasic;
 
+import jpabasic.domain.AddressEntity;
 import jpabasic.domain.Member;
 import jpabasic.embedded.Address;
 
@@ -20,15 +21,37 @@ public class JpaMain {
 
         try {
 
-            Address address = new Address("city", "street", "zipcode");
+            Member member = new Member();
+            member.setName("member1");
+            member.setHomeAddress(new Address("homeCity", "street", "10000"));
 
-            Member member1 = new Member();
-            member1.setName("member1");
-            member1.setHomeAddress(address);
-            em.persist(member1);
 
-            Address newAddress = new Address("newCity", address.getStreet(), address.getZipcode());
-            member1.setHomeAddress(newAddress);
+            member.getFavoriteFoods().add("치킨");
+            member.getFavoriteFoods().add("피자");
+            member.getFavoriteFoods().add("보쌈");
+
+            member.getAddressHistory().add(new AddressEntity("old1", "street1", "10000"));
+            member.getAddressHistory().add(new AddressEntity("old2", "street2", "20000"));
+
+            em.persist(member);
+
+            em.flush();
+            em.clear();
+
+            System.out.println("=============START===========");
+            Member findMember = em.find(Member.class, member.getId());
+
+            //homeCity -> newCity
+            Address oldAddress = findMember.getHomeAddress();
+            findMember.setHomeAddress(new Address("newCity", oldAddress.getStreet(), oldAddress.getZipcode()));
+
+            //치킨 -> 한식
+            findMember.getFavoriteFoods().remove("치킨");
+            findMember.getFavoriteFoods().add("한식");
+
+            //remove()는 equals hashcode가 구현되어 있어야 동작함 , 구현 안되어 있으면 삭제는 안되고 추가만 되는 문제 발생!!
+            findMember.getAddressHistory().remove(new AddressEntity("old1", oldAddress.getStreet(), oldAddress.getZipcode()));
+            findMember.getAddressHistory().add(new AddressEntity("newCity1", oldAddress.getStreet(), oldAddress.getZipcode()));
 
             tx.commit();
         } catch (Exception e) {
