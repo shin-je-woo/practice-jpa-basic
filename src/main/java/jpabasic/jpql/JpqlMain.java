@@ -18,22 +18,25 @@ public class JpqlMain {
 
         try {
 
-            User user = new User();
-            user.setUsername("userA");
-            user.setAge(10);
-            em.persist(user);
+            for (int i = 0; i < 100; i++) {
+                User user = new User();
+                user.setUsername("user" + i);
+                user.setAge(i);
+                em.persist(user);
+            }
 
             em.flush();
             em.clear();
 
-            List<UserDTO> resultList = em.createQuery("select distinct new jpabasic.jpql.UserDTO(u.username, u.age) from User u", UserDTO.class)
+            List<User> resultList = em.createQuery("select u from User u order by u.age asc", User.class)
+                    .setFirstResult(6)
+                    .setMaxResults(10)
                     .getResultList();
 
-            for (UserDTO userDTO : resultList) {
-                System.out.println("userDTO.username = " + userDTO.getUsername());
-                System.out.println("userDTO.age = " + userDTO.getAge());
+            System.out.println("resultList.size() = " + resultList.size());
+            for (User user : resultList) {
+                System.out.println("user = " + user);
             }
-
 
             tx.commit();
         } catch (Exception e) {
