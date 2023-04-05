@@ -2,7 +2,6 @@ package jpabasic;
 
 import jpabasic.domain.Member;
 import jpabasic.embedded.Address;
-import jpabasic.embedded.Period;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -21,12 +20,15 @@ public class JpaMain {
 
         try {
 
-            Member member = new Member();
-            member.setName("hello");
-            member.setHomeAddress(new Address("city", "street", "1234"));
-            member.setWorkPeriod(new Period());
+            Address address = new Address("city", "street", "zipcode");
 
-            em.persist(member);
+            Member member1 = new Member();
+            member1.setName("member1");
+            member1.setHomeAddress(address);
+            em.persist(member1);
+
+            Address newAddress = new Address("newCity", address.getStreet(), address.getZipcode());
+            member1.setHomeAddress(newAddress);
 
             tx.commit();
         } catch (Exception e) {
