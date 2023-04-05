@@ -1,5 +1,7 @@
 package jpabasic.domain;
 
+import jpabasic.embedded.Address;
+import jpabasic.embedded.Period;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,9 +18,20 @@ public class Member extends BaseEntity {
     @Column(name = "MEMBER_ID")
     private Long id;
     private String name;
-    private String city;
-    private String street;
-    private String zipcode;
+
+    @Embedded
+    private Period workPeriod;
+
+    @Embedded
+    private Address homeAddress;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "city", column = @Column(name = "WORK_CITY")),
+            @AttributeOverride(name = "street", column = @Column(name = "WORK_STREET")),
+            @AttributeOverride(name = "zipcode", column = @Column(name = "WORK_ZIPCODE"))
+    })
+    private Address workAddress;
 
     @OneToMany(mappedBy = "member")
     private List<Order> orders = new ArrayList<>();
