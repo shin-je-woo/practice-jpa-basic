@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
@@ -13,9 +14,17 @@ import java.util.Objects;
 @AllArgsConstructor
 public class Address {
 
+    @Column(length = 10)
     private String city;
+    @Column(length = 20)
     private String street;
+    @Column(length = 5)
     private String zipcode;
+
+    //값타입의 장점
+    public String fullAddress() {
+        return getCity() + " " + getStreet() + " " + getZipcode();
+    }
 
     @Override
     public boolean equals(Object o) {

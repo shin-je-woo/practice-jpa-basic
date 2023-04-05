@@ -1,5 +1,6 @@
 package jpabasic.domain;
 
+import jpabasic.embedded.Address;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,9 +14,8 @@ public class Delivery extends BaseEntity {
     @GeneratedValue
     private Long id;
 
-    private String city;
-    private String street;
-    private String zipcode;
+    @Embedded
+    private Address address;
 
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status;
