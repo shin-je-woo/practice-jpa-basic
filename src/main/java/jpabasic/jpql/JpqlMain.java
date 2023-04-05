@@ -1,6 +1,10 @@
 package jpabasic.jpql;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
+import java.util.List;
 
 public class JpqlMain {
 
@@ -19,10 +23,16 @@ public class JpqlMain {
             user.setAge(10);
             em.persist(user);
 
-            User singleResult = em.createQuery("select u from User u where u.username = :username", User.class)
-                    .setParameter("username", "userA")
-                    .getSingleResult();
-            System.out.println("singleResult = " + singleResult);
+            em.flush();
+            em.clear();
+
+            List<UserDTO> resultList = em.createQuery("select distinct new jpabasic.jpql.UserDTO(u.username, u.age) from User u", UserDTO.class)
+                    .getResultList();
+
+            for (UserDTO userDTO : resultList) {
+                System.out.println("userDTO.username = " + userDTO.getUsername());
+                System.out.println("userDTO.age = " + userDTO.getAge());
+            }
 
 
             tx.commit();
