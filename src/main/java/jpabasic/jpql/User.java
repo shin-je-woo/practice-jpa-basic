@@ -19,7 +19,12 @@ public class User {
 
     private int age;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "belong_id")
     private Belong belong;
+
+    public void changeBelong(Belong belong) {
+        this.belong = belong;
+        belong.getUserList().add(this);
+    }
 }

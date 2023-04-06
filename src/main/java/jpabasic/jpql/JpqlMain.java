@@ -18,25 +18,35 @@ public class JpqlMain {
 
         try {
 
-            for (int i = 0; i < 100; i++) {
-                User user = new User();
-                user.setUsername("user" + i);
-                user.setAge(i);
-                em.persist(user);
-            }
+            Belong belong = new Belong();
+            belong.setName("belongA");
+            em.persist(belong);
+
+            User user = new User();
+            user.setUsername("userA");
+            user.setAge(10);
+
+            user.changeBelong(belong);
+
+            em.persist(user);
 
             em.flush();
             em.clear();
 
-            List<User> resultList = em.createQuery("select u from User u order by u.age asc", User.class)
-                    .setFirstResult(6)
-                    .setMaxResults(10)
+            String query1 = "select u from User u left join u.belong b";
+            List<User> resultList1 = em.createQuery(query1, User.class)
                     .getResultList();
+            System.out.println("resultList1.size() = " + resultList1.size());
 
-            System.out.println("resultList.size() = " + resultList.size());
-            for (User user : resultList) {
-                System.out.println("user = " + user);
-            }
+            String query2 = "select u from User u left join u.belong b on b.name ='A'";
+            List<User> resultList2 = em.createQuery(query2, User.class)
+                    .getResultList();
+            System.out.println("resultList2.size() = " + resultList2.size());
+
+            String query3 = "select u from User u left join Belong b on u.username = b.name";
+            List<User> resultList3 = em.createQuery(query3, User.class)
+                    .getResultList();
+            System.out.println("resultList2.size() = " + resultList3.size());
 
             tx.commit();
         } catch (Exception e) {
