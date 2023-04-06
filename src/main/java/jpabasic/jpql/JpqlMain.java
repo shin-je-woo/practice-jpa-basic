@@ -23,7 +23,8 @@ public class JpqlMain {
             em.persist(belong);
 
             User user = new User();
-            user.setUsername("userA");
+//            user.setUsername("userA");
+            user.setUsername("관리자");
             user.setAge(10);
             user.setType(MyUserType.ADMIN);
 
@@ -34,16 +35,31 @@ public class JpqlMain {
             em.flush();
             em.clear();
 
-            String query = "select u.username, 'HELLO', true from User u " +
-                            "where u.type = :userType";
-            List<Object[]> resultList = em.createQuery(query)
-                    .setParameter("userType", MyUserType.ADMIN)
-                    .getResultList();
+            //case-when
+            String query =
+                    "select " +
+                            "case when u.age <= 10 then '학생요금'" +
+                            "     when u.age >= 60 then '경로요금'" +
+                            "else '일반요금'" +
+                            "end " +
+                    "from User u";
+            List<String> resultList = em.createQuery(query, String.class).getResultList();
+            for (String s : resultList) {
+                System.out.println("s = " + s);
+            }
 
-            for (Object[] objects : resultList) {
-                System.out.println("objects = " + objects[0]);
-                System.out.println("objects = " + objects[1]);
-                System.out.println("objects = " + objects[2]);
+            //coalesce
+            String query1 = "select coalesce(u.username, '이름 없는 회원') as username from User u";
+            List<String> resultList1 = em.createQuery(query1, String.class).getResultList();
+            for (String s : resultList1) {
+                System.out.println("s = " + s);
+            }
+
+            //nullif
+            String query2 = "select nullif(u.username, '관리자') as username from User u";
+            List<String> resultList2 = em.createQuery(query2, String.class).getResultList();
+            for (String s : resultList2) {
+                System.out.println("s = " + s);
             }
 
             tx.commit();
