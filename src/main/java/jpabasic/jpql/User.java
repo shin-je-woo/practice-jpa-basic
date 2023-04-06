@@ -19,6 +19,9 @@ public class User {
 
     private int age;
 
+    @Enumerated(value = EnumType.STRING)
+    private MyUserType type;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "belong_id")
     private Belong belong;

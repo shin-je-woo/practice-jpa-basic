@@ -25,6 +25,7 @@ public class JpqlMain {
             User user = new User();
             user.setUsername("userA");
             user.setAge(10);
+            user.setType(MyUserType.ADMIN);
 
             user.changeBelong(belong);
 
@@ -33,20 +34,17 @@ public class JpqlMain {
             em.flush();
             em.clear();
 
-            String query1 = "select u from User u left join u.belong b";
-            List<User> resultList1 = em.createQuery(query1, User.class)
+            String query = "select u.username, 'HELLO', true from User u " +
+                            "where u.type = :userType";
+            List<Object[]> resultList = em.createQuery(query)
+                    .setParameter("userType", MyUserType.ADMIN)
                     .getResultList();
-            System.out.println("resultList1.size() = " + resultList1.size());
 
-            String query2 = "select u from User u left join u.belong b on b.name ='A'";
-            List<User> resultList2 = em.createQuery(query2, User.class)
-                    .getResultList();
-            System.out.println("resultList2.size() = " + resultList2.size());
-
-            String query3 = "select u from User u left join Belong b on u.username = b.name";
-            List<User> resultList3 = em.createQuery(query3, User.class)
-                    .getResultList();
-            System.out.println("resultList2.size() = " + resultList3.size());
+            for (Object[] objects : resultList) {
+                System.out.println("objects = " + objects[0]);
+                System.out.println("objects = " + objects[1]);
+                System.out.println("objects = " + objects[2]);
+            }
 
             tx.commit();
         } catch (Exception e) {
