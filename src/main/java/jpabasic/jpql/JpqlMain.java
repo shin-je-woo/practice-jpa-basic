@@ -45,8 +45,11 @@ public class JpqlMain {
             em.flush();
             em.clear();
 
-            String query = "select distinct b from Belong b join fetch b.userList";
-            List<Belong> resultList = em.createQuery(query, Belong.class).getResultList();
+            String query = "select b from Belong b";
+            List<Belong> resultList = em.createQuery(query, Belong.class)
+                    .setFirstResult(0)
+                    .setMaxResults(2)
+                    .getResultList();
 
             for (Belong belong : resultList) {
                 System.out.println("belong = " + belong.getName());
