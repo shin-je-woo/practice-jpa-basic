@@ -18,49 +18,43 @@ public class JpqlMain {
 
         try {
 
-            Belong belong = new Belong();
-            belong.setName("belongA");
-            em.persist(belong);
+            Belong belong1 = new Belong();
+            belong1.setName("팀1");
+            em.persist(belong1);
 
-            User user = new User();
-//            user.setUsername("userA");
-            user.setUsername("관리자");
-            user.setAge(10);
-            user.setType(MyUserType.ADMIN);
+            Belong belong2 = new Belong();
+            belong2.setName("팀2");
+            em.persist(belong2);
 
-            user.changeBelong(belong);
+            User user1 = new User();
+            user1.setUsername("회원1");
+            user1.changeBelong(belong1);
+            em.persist(user1);
 
-            em.persist(user);
+            User user2 = new User();
+            user2.setUsername("회원2");
+            user2.changeBelong(belong1);
+            em.persist(user2);
+
+            User user3 = new User();
+            user3.setUsername("회원3");
+            user3.changeBelong(belong2);
+            em.persist(user3);
+
 
             em.flush();
             em.clear();
 
-            //case-when
-            String query =
-                    "select " +
-                            "case when u.age <= 10 then '학생요금'" +
-                            "     when u.age >= 60 then '경로요금'" +
-                            "else '일반요금'" +
-                            "end " +
-                    "from User u";
-            List<String> resultList = em.createQuery(query, String.class).getResultList();
-            for (String s : resultList) {
-                System.out.println("s = " + s);
+            String query = "select distinct b from Belong b join fetch b.userList";
+            List<Belong> resultList = em.createQuery(query, Belong.class).getResultList();
+
+            for (Belong belong : resultList) {
+                System.out.println("belong = " + belong.getName());
+                for (User user : belong.getUserList()) {
+                    System.out.println("user = " + user.getUsername());
+                }
             }
 
-            //coalesce
-            String query1 = "select coalesce(u.username, '이름 없는 회원') as username from User u";
-            List<String> resultList1 = em.createQuery(query1, String.class).getResultList();
-            for (String s : resultList1) {
-                System.out.println("s = " + s);
-            }
-
-            //nullif
-            String query2 = "select nullif(u.username, '관리자') as username from User u";
-            List<String> resultList2 = em.createQuery(query2, String.class).getResultList();
-            for (String s : resultList2) {
-                System.out.println("s = " + s);
-            }
 
             tx.commit();
         } catch (Exception e) {
