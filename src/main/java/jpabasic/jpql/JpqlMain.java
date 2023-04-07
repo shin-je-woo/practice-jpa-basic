@@ -45,17 +45,12 @@ public class JpqlMain {
             em.flush();
             em.clear();
 
-            String query = "select b from Belong b";
-            List<Belong> resultList = em.createQuery(query, Belong.class)
-                    .setFirstResult(0)
-                    .setMaxResults(2)
+            List<User> resultList = em.createNamedQuery("User.findByUserName", User.class)
+                    .setParameter("username", "회원1")
                     .getResultList();
 
-            for (Belong belong : resultList) {
-                System.out.println("belong = " + belong.getName());
-                for (User user : belong.getUserList()) {
-                    System.out.println("user = " + user.getUsername());
-                }
+            for (User user : resultList) {
+                System.out.println("user = " + user.getUsername());
             }
 
 

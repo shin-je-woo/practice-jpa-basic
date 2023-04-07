@@ -9,6 +9,10 @@ import javax.persistence.*;
 @Entity
 @Getter @Setter
 @ToString
+@NamedQuery(
+        name = "User.findByUserName",
+        query = "select u from User u where u.username = :username"
+)
 public class User {
 
     @Id
