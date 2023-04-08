@@ -4,7 +4,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import java.util.List;
 
 public class JpqlMain {
 
@@ -41,18 +40,14 @@ public class JpqlMain {
             user3.changeBelong(belong2);
             em.persist(user3);
 
+            int resultCount = em.createQuery("update User u set u.age = 20")
+                    .executeUpdate();
 
-            em.flush();
             em.clear();
 
-            List<User> resultList = em.createNamedQuery("User.findByUserName", User.class)
-                    .setParameter("username", "회원1")
-                    .getResultList();
+            User findUser = em.find(User.class, user1.getId());
 
-            for (User user : resultList) {
-                System.out.println("user = " + user.getUsername());
-            }
-
+            System.out.println("findUser = " + findUser);
 
             tx.commit();
         } catch (Exception e) {
